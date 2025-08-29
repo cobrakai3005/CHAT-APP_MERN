@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Himanshu",
+      "email": "himanshu@gmail.com"
+    },
+    {
+      "id": "2",
+      "name": "Rahul",
+      "email": "rahul@gmail.com"
+    },
+    {
+      "id": "3",
+      "name": "test",
+      "email": "test@gmail.com"
+    },
+    {
+      "id": "4",
+      "name": "Virat",
+      "email": "virat@gmail.com"
+    },
+    {
+      "id": "5",
+      "name": "Rohit",
+      "email": "rohit@gmail.com"
+    }
+  ],
+
+  "conversations": [
+    {
+      "users": [
+        {
+          "id": "5",
+          "name": "Rohit",
+          "email": "rohit@gmail.com"
+        },
+        {
+          "id": "4",
+          "name": "Virat",
+          "email": "virat@gmail.com"
+        }
+      ]
+    }
+  ]
+}
