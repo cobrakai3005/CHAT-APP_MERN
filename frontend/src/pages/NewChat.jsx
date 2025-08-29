@@ -13,7 +13,10 @@ import FullScreenImage from "../components/FullScreenImage";
 
 export default function NewChat() {
   const { user } = useUser();
-  const socket = useMemo(() => io("http://localhost:3000"), []);
+  const socket = useMemo(
+    () => io("https://chat-app-mern-1-rbxf.onrender.com"),
+    []
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const startChatsWith = searchParams.get("user");
   const [isOpen, setIsOpen] = useState(false);

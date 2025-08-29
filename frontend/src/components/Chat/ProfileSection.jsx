@@ -57,7 +57,7 @@ export default function ProfileSection() {
     const data = await res.json();
     if (data.success) {
       toast.success(data?.message);
-      setBio(data?.bio);
+      setBio(bio);
     }
     setForm(false);
     setLoad(false);
