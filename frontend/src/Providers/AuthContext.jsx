@@ -18,7 +18,7 @@ export default function AuthProvider({ children }) {
     formData.append("password", user.password);
     formData.append("profile_pic", user.pic);
 
-    const res = await fetch("/api/users/register", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/users/register`, {
       method: "POST",
       body: formData,
     });
@@ -37,7 +37,7 @@ export default function AuthProvider({ children }) {
     }
   };
   const login = (user) => {
-    fetch("/api/users/login", {
+    fetch(`${import.meta.env.VITE_API_URL}/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,6 +46,7 @@ export default function AuthProvider({ children }) {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         if (data.success == true) {
           localStorage.setItem("auth-user", JSON.stringify(data.user));
           localStorage.setItem("auth-token", JSON.stringify(data.user.token));
@@ -74,7 +75,7 @@ export default function AuthProvider({ children }) {
   const getMe = () => {
     const token = JSON.parse(localStorage.getItem("auth-token"));
     if (token) {
-      fetch("/api/users/get-me", {
+      fetch(`${import.meta.env.VITE_API_URL}/users/get-me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

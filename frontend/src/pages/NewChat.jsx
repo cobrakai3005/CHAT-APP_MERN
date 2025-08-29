@@ -243,7 +243,7 @@ function MiddlePanel() {
   const fetchUsers = async () => {
     setLoading(true);
     await new Promise((res, rej) => setTimeout(res, 1200));
-    const res = await fetch(`/api/users`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -332,11 +332,14 @@ function Messages({ socket }) {
       // Wait 3 seconds
       await new Promise((res) => setTimeout(res, 2000));
 
-      const response = await fetch(`/api/messages/${startChatsWith}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/messages/${startChatsWith}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
       if (data.success == true) {
         setMessages(data?.messages);
@@ -459,12 +462,15 @@ function MessageInput({ socket }) {
     setLoad(true);
     const token = JSON.parse(localStorage.getItem("auth-token"));
     try {
-      const res = await fetch(`/api/messages/imageDelete/${public_id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/messages/imageDelete/${public_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          method: "DELETE",
+        }
+      );
       const data = await res.json();
       if (data.success === true) {
         setMedia();
