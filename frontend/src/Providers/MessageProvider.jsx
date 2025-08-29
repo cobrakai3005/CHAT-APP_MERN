@@ -13,7 +13,7 @@ export default function MessageProvider({ children }) {
     if (!token) return;
     if (!startChatsWith) return;
 
-    fetch(`/api/messages/${startChatsWith}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/messages/${startChatsWith}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -20,11 +20,11 @@ export default function Login() {
         toast.error("Please Fill all fields");
       }
       await login({ email, password });
-      await new Promise((res, rej) => setTimeout(res, 1000));
-      navigate("/chats");
+      await new Promise((res, rej) => setTimeout(res, 1400));
     } catch (error) {
     } finally {
       setLoad(false);
+      navigate("/chats");
     }
   };
   return (

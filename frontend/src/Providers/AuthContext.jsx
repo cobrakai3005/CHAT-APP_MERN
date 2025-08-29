@@ -62,7 +62,7 @@ export default function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    fetch("/api/users/sign-out")
+    fetch(`${import.meta.env.VITE_API_URL}/users/sign-out`)
       .then((res) => res.json())
       .then((data) => {
         setUser();

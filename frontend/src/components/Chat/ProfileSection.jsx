@@ -19,15 +19,18 @@ export default function ProfileSection() {
     setLoadProfile(true);
     const formData = new FormData();
     formData.append("avatar", photo);
-    const res = await fetch("/api/users/update-profile", {
-      method: "PUT",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("auth-token")
-        )}`,
-      },
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/users/update-profile`,
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("auth-token")
+          )}`,
+        },
+      }
+    );
 
     const data = await res.json();
     if (data.success) {
@@ -44,15 +47,18 @@ export default function ProfileSection() {
     const formData = new FormData();
     formData.append("bio", bio);
 
-    const res = await fetch("/api/users/update-profile", {
-      method: "PUT",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("auth-token")
-        )}`,
-      },
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/users/update-profile`,
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("auth-token")
+          )}`,
+        },
+      }
+    );
 
     const data = await res.json();
     if (data.success) {

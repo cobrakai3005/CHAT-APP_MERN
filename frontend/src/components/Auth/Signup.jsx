@@ -30,7 +30,6 @@ export default function Signup() {
     }
     try {
       await register({ name, email, password, pic });
-      await navigate("/chats");
     } catch (error) {
     } finally {
       setLoad(false);
@@ -39,6 +38,7 @@ export default function Signup() {
       setPassword("");
       setConfirmPassword("");
       setPic();
+      navigate("/chats");
     }
   };
   return (
