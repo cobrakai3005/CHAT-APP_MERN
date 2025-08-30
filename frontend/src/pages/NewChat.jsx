@@ -13,10 +13,7 @@ import FullScreenImage from "../components/FullScreenImage";
 
 export default function NewChat() {
   const { user } = useUser();
-  const socket = useMemo(
-    () => io("https://chat-app-mern-1-rbxf.onrender.com"),
-    []
-  );
+  const socket = useMemo(() => io(`${import.meta.env.VITE_SOCKET_URL}`), []);
   const [searchParams, setSearchParams] = useSearchParams();
   const startChatsWith = searchParams.get("user");
   const [isOpen, setIsOpen] = useState(false);
@@ -79,7 +76,7 @@ export default function NewChat() {
         className={`w-full min-h-screen bg-zinc-300 p-4 flex flex-col  sm:grid gap-5  ${
           isOpen
             ? "sm:grid-cols-[500px_400px_1fr]"
-            : "grid-cols-[70px_260px_1fr] md:grid-cols-[70px_400px_1fr] "
+            : "grid-cols-[70px_260px_1fr] md:grid-cols-[70px_300px_1fr] "
         }`}
       >
         {/* Small Panel */}
@@ -237,9 +234,9 @@ function MiddlePanel() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user, logout } = useUser();
+  const { user } = useUser();
   const token = JSON.parse(localStorage.getItem("auth-token"));
-
+  const [show, setShow] = useState();
   const fetchUsers = async () => {
     setLoading(true);
     await new Promise((res, rej) => setTimeout(res, 1200));
@@ -263,8 +260,11 @@ function MiddlePanel() {
           <h3>{user.name}</h3>
           <h2 className="text-2xl font-semibold text-zinc-800">Inbox </h2>
         </div>
+        <button onClick={() => setShow(!show)}>Show</button>
       </div>
-      <div className="overflow-y-scroll h-[550px]">
+
+      {/* For Big Screen */}
+      <div className={`overflow-y-scroll h-[550px]  sm:block`}>
         {loading &&
           new Array(5).fill(9).map((el) => (
             <div className="flex p-3 items-center gap-3 border-b-[1px] border-zinc-700/30">
@@ -279,6 +279,8 @@ function MiddlePanel() {
           users.length > 0 &&
           users?.map((el, i) => <Chat key={i} user={el} />)}
       </div>
+
+      {/* For Smaall Screen */}
     </div>
   );
 }
@@ -429,7 +431,9 @@ function MessageInput({ socket }) {
         data.append("cloud_name", "dl3vluct6");
 
         const res = await fetch(
-          "https://api.cloudinary.com/v1_1/dl3vluct6/upload",
+          `${import.meta.env.VITE_CLOUDINARY_UPLOAD_URL}/${
+            import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+          }/upload`,
           {
             method: "POST",
             body: data,
@@ -488,6 +492,7 @@ function MessageInput({ socket }) {
         <input
           type="text"
           placeholder="😊 Send Your message.."
+          spellCheck={"false"}
           value={message}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

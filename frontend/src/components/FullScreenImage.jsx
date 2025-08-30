@@ -11,7 +11,7 @@ export default function FullScreenImage({ setImageOpen, setImage, image }) {
           setImage();
         }
       }}
-      className="absolute top-0  flex justify-center items-center left-0 w-full h-screen bg-black/70"
+      className="absolute bottom-0  flex justify-center items-center left-0 w-full h-screen bg-black/70"
     >
       <img className={"w-[40%] "} src={image} alt="" />
     </div>

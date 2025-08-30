@@ -10,14 +10,14 @@ export default function AuthTabs() {
       >
         <Tab
           className={
-            "px-4 py-2 hover:bg-[#03045e] rounded text-[#03045e] font-medium text-2xl data-selected:bg-[#03045e] data-selected:text-white outline-0"
+            "px-4 py-2 hover:bg-amber-600 rounded text-[#03045e] font-medium text-2xl data-selected:bg-[#03045e] data-selected:text-white outline-0"
           }
         >
           Login
         </Tab>
         <Tab
           className={
-            "px-4 py-2 hover:bg-amber-200 rounded text-[#03045e] font-medium text-2xl  data-selected:bg-[#03045e] data-selected:text-white outline-0"
+            "px-4 py-2 hover:bg-amber-600 rounded text-[#03045e] font-medium text-2xl  data-selected:bg-[#03045e] data-selected:text-white outline-0"
           }
         >
           Sign up

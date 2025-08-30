@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const path = require("path");
-
+const bcrypt = require("bcryptjs");
 const User = require("../models/user.model.js");
 const generateToken = require("../config/generateToken.js");
 const { uploadOnCloudinary } = require("../config/cloudinary.js");
@@ -13,8 +13,9 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const userExists = await User.findOne({ email });
-  console.log(req.file);
+
   const filePath = path.resolve(req.file.path);
+  
   if (userExists) {
     res.status(400);
     throw new Error("User already Exists");
@@ -53,7 +54,13 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
+  if (!user) {
+    res.status(400);
+    throw new Error("User Does not Exists");
+  }
+
+  const comparePassword = bcrypt.compare(password, user.password);
+  if (comparePassword) {
     return res.status(200).json({
       success: true,
       user: {
@@ -64,10 +71,14 @@ const loginUser = asyncHandler(async (req, res) => {
         token: generateToken(user._id),
       },
     });
-  } else {
-    res.status(400);
-    throw new Error("Invalid Credentials");
   }
+  res.status(400);
+  throw new Error("Invalid Credentials");
+  // if (await user.matchPassword(password)) {
+
+  // } else {
+
+  // }
 });
 
 const getAllUser = asyncHandler(async (req, res) => {
