@@ -7,9 +7,10 @@ import io from "socket.io-client";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import StartChating from "../components/StartChating";
 import { toast } from "react-toastify";
-import { Loader2, Trash, Video } from "lucide-react";
+import { Loader2, MessageCircleMore, Trash, Video, X } from "lucide-react";
 import SmallPanel from "../components/Chat/SmallPanel";
 import FullScreenImage from "../components/FullScreenImage";
+import MessageProvider, { useMessages } from "../Providers/MessageProvider";
 
 export default function NewChat() {
   const { user } = useUser();
@@ -73,7 +74,7 @@ export default function NewChat() {
         </div>
       )}
       <div
-        className={`w-full min-h-screen bg-zinc-300 p-1 flex flex-col  sm:grid gap-5  ${
+        className={`w-full min-h-screen relative bg-zinc-300 p-1 flex flex-col  sm:grid gap-5  ${
           isOpen
             ? "sm:grid-cols-[500px_400px_1fr]"
             : "grid-cols-[70px_260px_1fr] md:grid-cols-[70px_300px_1fr] "
@@ -84,39 +85,41 @@ export default function NewChat() {
         {/* middle */}
         <MiddlePanel />
         {/* Long Pannel */}
-        <div className="bg-white rounded-4xl flex flex-col p-2  gap-3 ">
-          {!startChatsWith ? (
-            <StartChating />
-          ) : (
-            <div className="w-full  h-[60px] border-b-[1px] flex  gap-2 items-center border-zinc-800/20">
-              <img
-                className="w-10"
-                src={
-                  "https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png"
-                }
-                alt=""
-              />
-              <div className="flex flex-col">
-                <h3 className="text-lg font-mono">{startChatsWith}</h3>
-                <p className="text-xs">Active now</p>
+        <MessageProvider socket={socket}>
+          <div className="bg-white rounded-4xl flex flex-col p-2  gap-3 ">
+            {!startChatsWith ? (
+              <StartChating />
+            ) : (
+              <div className="w-full  h-[60px] border-b-[1px] flex  gap-2 items-center border-zinc-800/20">
+                <img
+                  className="w-10"
+                  src={
+                    "https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png"
+                  }
+                  alt=""
+                />
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-mono">{startChatsWith}</h3>
+                  <p className="text-xs">Active now</p>
+                </div>
+                <button
+                  onClick={sendVideoLink}
+                  className="ml-auto bg-amber-300 hover:bg-amber-500 rounded-md text-white px-3 py-2"
+                >
+                  <Video />
+                </button>
               </div>
-              <button
-                onClick={sendVideoLink}
-                className="ml-auto bg-amber-300 hover:bg-amber-500 rounded-md text-white px-3 py-2"
-              >
-                <Video />
-              </button>
-            </div>
-          )}
+            )}
 
-          {/* Messages */}
-          {startChatsWith && (
-            <>
-              <Messages socket={socket} />
-              <MessageInput socket={socket} />
-            </>
-          )}
-        </div>
+            {/* Messages */}
+            {startChatsWith && (
+              <>
+                <Messages socket={socket} />
+                <MessageInput socket={socket} />
+              </>
+            )}
+          </div>
+        </MessageProvider>
       </div>
     </>
   );
@@ -222,6 +225,8 @@ function Message({ message }) {
       >
         <span className="time">
           {new Date(message.createdAt).toLocaleTimeString([], {
+            day: "2-digit",
+            month: "short",
             hour: "2-digit",
             minute: "2-digit",
           })}
@@ -255,45 +260,79 @@ function MiddlePanel() {
     fetchUsers();
   }, []);
   return (
-    <div className="bg-white rounded-4xl ">
-      <div className="flex p-6 items-center justify-between border-b-[1px] border-zinc-700/30">
-        <div className="text-2xl text-amber-700 font-mono">
-          <h3>{user.name}</h3>
-          <h2 className="text-2xl font-semibold text-zinc-800">Inbox </h2>
-        </div>
-        <button onClick={() => setShow(!show)}>Show</button>
-      </div>
-
+    <>
       {/* For Big Screen */}
-      <div className={`overflow-y-scroll h-[550px]  sm:block`}>
-        {loading &&
-          new Array(5).fill(9).map((el) => (
-            <div className="flex p-3 items-center gap-3 border-b-[1px] border-zinc-700/30">
-              <div className="p-6 bg-zinc-200 rounded-full animate-pulse"></div>
-              <div className="flex w-full flex-col gap-4 animate-pulse">
-                <h2 className="text-md font-mono bg-zinc-200 rounded-md p-2 animate-pulse"></h2>
-                <p className="text-sm font-normal bg-zinc-200 p-2 rounded-md animate-pulse"></p>
-              </div>
-            </div>
-          ))}
-        {!loading &&
-          users.length > 0 &&
-          users?.map((el, i) => <Chat key={i} user={el} />)}
-      </div>
+      <div className="bg-white rounded-4xl hidden sm:block">
+        <div className="flex p-6 items-center justify-between border-b-[1px] border-zinc-700/30">
+          <div className="text-2xl text-amber-700 font-mono">
+            <h3>{user.name}</h3>
+            <h2 className="text-2xl font-semibold text-zinc-800">Inbox </h2>
+          </div>
+          <button onClick={() => setShow(!show)}>Show</button>
+        </div>
 
-      {/* For Smaall Screen */}
-    </div>
+        <div className={`overflow-y-scroll h-[550px]  sm:block`}>
+          {loading &&
+            new Array(5).fill(9).map((el) => (
+              <div className="flex p-3 items-center gap-3 border-b-[1px] border-zinc-700/30">
+                <div className="p-6 bg-zinc-200 rounded-full animate-pulse"></div>
+                <div className="flex w-full flex-col gap-4 animate-pulse">
+                  <h2 className="text-md font-mono bg-zinc-200 rounded-md p-2 animate-pulse"></h2>
+                  <p className="text-sm font-normal bg-zinc-200 p-2 rounded-md animate-pulse"></p>
+                </div>
+              </div>
+            ))}
+          {!loading &&
+            users.length > 0 &&
+            users?.map((el, i) => <Chat key={i} user={el} />)}
+        </div>
+      </div>
+      <button
+        className={`absolute right-5 top-5 rounded sm:hidden  bg-amber-700 hover:bg-amber-500 p-3 text-white`}
+        onClick={() => setShow(!show)}
+      >
+        <MessageCircleMore />
+      </button>
+      {/* For small Screen Screen */}
+      <div
+        className={`bg-white z-[100] rounded w-[60%] absolute top-0 ${
+          show ? "left-0" : "-left-[100%]"
+        } w-full  rounded-4xl  sm:hidden`}
+      >
+        <div className="flex p-6 items-center justify-between border-b-[1px] border-zinc-700/30">
+          <div className="text-2xl text-amber-700 font-mono">
+            <h3>{user.name}</h3>
+            <h2 className="text-2xl font-semibold text-zinc-800">Inbox </h2>
+          </div>
+          <button onClick={() => setShow(false)}>
+            <X />
+          </button>
+        </div>
+
+        <div className={`overflow-y-scroll h-[550px]  sm:block`}>
+          {loading &&
+            new Array(5).fill(9).map((el) => (
+              <div className="flex p-3 items-center gap-3 border-b-[1px] border-zinc-700/30">
+                <div className="p-6 bg-zinc-200 rounded-full animate-pulse"></div>
+                <div className="flex w-full flex-col gap-4 animate-pulse">
+                  <h2 className="text-md font-mono bg-zinc-200 rounded-md p-2 animate-pulse"></h2>
+                  <p className="text-sm font-normal bg-zinc-200 p-2 rounded-md animate-pulse"></p>
+                </div>
+              </div>
+            ))}
+          {!loading &&
+            users.length > 0 &&
+            users?.map((el, i) => <Chat key={i} user={el} />)}
+        </div>
+      </div>
+    </>
   );
 }
 
 function Messages({ socket }) {
   const { user } = useUser();
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [someoneTyping, setSomeoneTyping] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const startChatsWith = searchParams.get("user");
-  const notify = new Audio(sound);
+  const { messages, loading, someoneTyping } = useMessages();
+
   const endRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -303,58 +342,6 @@ function Messages({ socket }) {
   useEffect(() => {
     scrollToBottom();
   }, [messages, someoneTyping]);
-
-  useEffect(() => {
-    socket.on("recieve_message", (data) => {
-      if (data.senderId.email !== user.email) {
-        toast(`Message Recieved from ${data.senderId.name}`);
-      }
-      setMessages((prev) => [...prev, data]);
-
-      notify.play();
-    });
-
-    socket.on("typing", () => setSomeoneTyping(true));
-    socket.on("stop_typing", () => setSomeoneTyping(false));
-
-    return () => {
-      socket.off("recieve_message");
-
-      socket.off("typing");
-      socket.off("stop_typing");
-    };
-  }, []);
-
-  useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("auth-token"));
-    if (!token) return;
-    if (!startChatsWith) return;
-
-    const fetchMessages = async () => {
-      setLoading(true);
-      // Wait 3 seconds
-      await new Promise((res) => setTimeout(res, 2000));
-
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/messages/${startChatsWith}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await response.json();
-      if (data.success == true) {
-        setMessages(data?.messages);
-      } else {
-        setMessages([]);
-      }
-
-      setLoading(false);
-    };
-
-    fetchMessages();
-  }, [startChatsWith]);
 
   return (
     <ul className="w-full flex flex-col gap-2 overflow-y-scroll h-[420px]">
@@ -381,7 +368,11 @@ function Messages({ socket }) {
           No Messages yet
         </h1>
       )}
-      {someoneTyping && "Typing"}
+      {someoneTyping && (
+        <p className="text-sm font-mono tracking-wider text-amber-700">
+          Typing
+        </p>
+      )}
       <div ref={endRef}></div>
     </ul>
   );

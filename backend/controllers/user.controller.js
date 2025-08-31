@@ -15,7 +15,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   const filePath = path.resolve(req.file.path);
-  
+
   if (userExists) {
     res.status(400);
     throw new Error("User already Exists");
@@ -23,10 +23,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const resource = await uploadOnCloudinary(filePath);
 
+  const hashed = await bcrypt.hash(password, 10);
   const user = await User.create({
     name,
     email,
-    password,
+    password: hashed,
     avatar: { public_id: resource.public_id, url: resource.secure_url },
   });
 
@@ -59,7 +60,8 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("User Does not Exists");
   }
 
-  const comparePassword = bcrypt.compare(password, user.password);
+  const comparePassword = await bcrypt.compare(password, user.password);
+
   if (comparePassword) {
     return res.status(200).json({
       success: true,
@@ -71,9 +73,12 @@ const loginUser = asyncHandler(async (req, res) => {
         token: generateToken(user._id),
       },
     });
+  } else {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid credentials" });
   }
-  res.status(400);
-  throw new Error("Invalid Credentials");
+
   // if (await user.matchPassword(password)) {
 
   // } else {

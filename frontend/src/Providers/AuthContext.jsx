@@ -47,7 +47,7 @@ export default function AuthProvider({ children }) {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data.success == true) {
+        if (data.success === true) {
           localStorage.setItem("auth-user", JSON.stringify(data.user));
           localStorage.setItem("auth-token", JSON.stringify(data.user.token));
           setUser(data.user);
