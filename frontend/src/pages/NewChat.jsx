@@ -18,7 +18,7 @@ export default function NewChat() {
   const [searchParams, setSearchParams] = useSearchParams();
   const startChatsWith = searchParams.get("user");
   const [isOpen, setIsOpen] = useState(false);
-  const [videoLink, setVideoLink] = useState();
+  const [videoLink, setVideoLink] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     socket.on("connect", () => {
@@ -33,11 +33,10 @@ export default function NewChat() {
     // cleanup => remove only listeners
     return () => {
       socket.off(); // remove all listeners on unmount
-      socket.off("recieve_message");
       socket.off("recieved-video-link");
       // socket.off("connect");
     };
-  }, [startChatsWith, socket]);
+  }, [startChatsWith, socket, videoLink]);
 
   const handleClick = () => setIsOpen(!isOpen);
 
@@ -48,12 +47,13 @@ export default function NewChat() {
       from: user.email,
       to: startChatsWith,
     });
+
     navigate(`/room/${roomId}`);
   };
   return (
     <>
-      {videoLink && (
-        <div className="absolute top-0 left-0 w-full  bg-amber-400 px-3 py-2 text-white flex flex-col gap-3 rounded ">
+      {videoLink ? (
+        <div className="absolute top-0 left-0 z-[1000] w-full  bg-amber-400 px-3 py-2 text-white flex flex-col gap-3 rounded ">
           <span className="font-bold text-center">
             Video Call From {videoLink.from}
           </span>
@@ -72,6 +72,8 @@ export default function NewChat() {
             </button>
           </div>
         </div>
+      ) : (
+        ""
       )}
       <div
         className={`w-full min-h-screen relative bg-zinc-300 p-1 flex flex-col  sm:grid gap-5  ${

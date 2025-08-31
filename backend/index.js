@@ -39,8 +39,10 @@ io.on("connection", (socket) => {
   socket.on(
     "new_message",
     async ({ message, media, senderEmail, receiverEmail }) => {
+      console.log("Message, New MWessage");
       const reciever = await User.findOne({ email: receiverEmail });
       const sender = await User.findOne({ email: senderEmail });
+
       const senderId = sender._id;
       const recieverId = reciever._id;
       let chat = await Chat.findOne({
