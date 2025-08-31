@@ -291,7 +291,7 @@ function MiddlePanel() {
         </div>
       </div>
       <button
-        className={`absolute right-5 top-5 rounded sm:hidden  bg-amber-700 hover:bg-amber-500 p-3 text-white`}
+        className={`absolute right-5 top-10 rounded sm:hidden  bg-amber-700 hover:bg-amber-500 p-3 text-white`}
         onClick={() => setShow(!show)}
       >
         <MessageCircleMore />
@@ -307,7 +307,10 @@ function MiddlePanel() {
             <h3>{user.name}</h3>
             <h2 className="text-2xl font-semibold text-zinc-800">Inbox </h2>
           </div>
-          <button onClick={() => setShow(false)}>
+          <button
+            onClick={() => setShow(false)}
+            className="bg-amber-700 hover:bg-black rounded-full p-3 text-white"
+          >
             <X />
           </button>
         </div>
