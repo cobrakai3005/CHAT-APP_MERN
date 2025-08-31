@@ -1,6 +1,10 @@
+import { Navigate } from "react-router-dom";
 import AuthTabs from "../components/AuthTabs";
+import { useUser } from "../Providers/AuthContext";
 
 export default function Home() {
+  const { user } = useUser();
+  if (user) return <Navigate to={"/chats"} />;
   return (
     <div className=" w-full h-full flex flex-col gap-4 justify-center p-5">
       <div className="w-full md:w-xl p-2 bg-white/10 backdrop-blur-md border border-white/40    mx-auto rounded-md flex justify-center items-center gap-4">

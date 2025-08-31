@@ -66,9 +66,12 @@ export default function AuthProvider({ children }) {
       .then((res) => res.json())
       .then((data) => {
         setUser();
-
         localStorage.removeItem("auth-token");
         localStorage.removeItem("auth-user");
+        toast.success("Logged Out Successfully");
+      })
+      .catch((er) => {
+        toast.error(er.message);
       });
   };
 

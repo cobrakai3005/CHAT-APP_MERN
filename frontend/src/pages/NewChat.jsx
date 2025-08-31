@@ -73,7 +73,7 @@ export default function NewChat() {
         </div>
       )}
       <div
-        className={`w-full min-h-screen bg-zinc-300 p-4 flex flex-col  sm:grid gap-5  ${
+        className={`w-full min-h-screen bg-zinc-300 p-1 flex flex-col  sm:grid gap-5  ${
           isOpen
             ? "sm:grid-cols-[500px_400px_1fr]"
             : "grid-cols-[70px_260px_1fr] md:grid-cols-[70px_300px_1fr] "
@@ -84,7 +84,7 @@ export default function NewChat() {
         {/* middle */}
         <MiddlePanel />
         {/* Long Pannel */}
-        <div className="bg-white rounded-4xl flex flex-col p-3  gap-3 ">
+        <div className="bg-white rounded-4xl flex flex-col p-2  gap-3 ">
           {!startChatsWith ? (
             <StartChating />
           ) : (
@@ -130,7 +130,7 @@ function Chat({ user }) {
     <Link
       to={`?user=${user.email}`}
       className={`flex p-3 items-center gap-3 border-b-[1px] ${
-        chatUser == user.email ? "bg-blue-700/50" : ""
+        chatUser == user.email ? "bg-zinc-800 text-amber-200" : ""
       } border-zinc-700/30`}
     >
       <img
@@ -182,14 +182,15 @@ function Message({ message }) {
           isSender ? "self-end flex-row-reverse" : "self-start"
         }`}
       >
-        <span className="w-[35px] h-[35px] rounded-full inline-flex items-center justify-center bg-[#03045e]">
+        <span className="w-[35px] h-[35px] rounded-full inline-flex items-center justify-center bg-zinc-800">
           {firstLetter}
         </span>
+        {/* bg-[#03045e] */}
         <span
           className={`max-w-xl text-md font-medium pl-6 pr-3 py-2 rounded-xl ${
             isSender
-              ? "bg-[#03045e] text-white"
-              : "border-[1px] border-[#03045e] text-[#03045e]"
+              ? "bg-zinc-800 text-white"
+              : "border-[1px] border-zinc-800/30 text-zinc-800"
           }`}
         >
           {message.text}
@@ -356,9 +357,9 @@ function Messages({ socket }) {
   }, [startChatsWith]);
 
   return (
-    <ul className="w-full flex flex-col gap-2 overflow-y-scroll h-[440px]">
+    <ul className="w-full flex flex-col gap-2 overflow-y-scroll h-[420px]">
       {loading && (
-        <ul className="space-y-2">
+        <ul className="space-y-[3px]">
           {new Array(10).fill(0).map((_, i) => (
             <li
               key={i}
@@ -366,7 +367,7 @@ function Messages({ socket }) {
                 i % 2 === 0 ? "justify-start" : "justify-end"
               }`}
             >
-              <div className="h-10  w-[300px] rounded-xl bg-blue-700/20 animate-pulse" />
+              <div className="h-10  w-[300px] rounded-xl bg-zinc-800/60 animate-pulse" />
             </li>
           ))}
         </ul>
@@ -487,10 +488,9 @@ function MessageInput({ socket }) {
   };
 
   return (
-    <div className="bg-zinc-200/50 flex flex-col gap-1 items-start justify-star rounded-xl p-3">
+    <div className="bg-zinc-200/50 flex h-32 flex-col gap-1 items-start justify-star rounded-xl p-3">
       <div className="flex w-full">
-        <input
-          type="text"
+        <textarea
           placeholder="😊 Send Your message.."
           spellCheck={"false"}
           value={message}
@@ -516,7 +516,7 @@ function MessageInput({ socket }) {
             }, 1000);
           }}
           className="px-4 py-2 outline-none w-full focus:border-b-[1px] border-amber-400/30 rounded font-medium"
-        />
+        ></textarea>
         <button
           onClick={sendMessage}
           className="bg-amber-500 px-3 py-2 rounded-3xl"
