@@ -32,9 +32,10 @@ export default function NewChat() {
 
     // cleanup => remove only listeners
     return () => {
-      socket.off(); // remove all listeners on unmount
+      // socket.off(); // remove all listeners on unmount
       socket.off("recieved-video-link");
-      // socket.off("connect");
+      socket.off("onlineUsers");
+      socket.off("connect");
     };
   }, [startChatsWith, socket, videoLink]);
 
